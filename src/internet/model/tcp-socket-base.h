@@ -1009,6 +1009,10 @@ protected:
    * \brief Enter the CA_RECOVERY, and retransmit the head
    */
   void EnterRecovery ();
+  /**
+   * \brief Enter the CA_OPEN
+   */
+  void EnterOpenState();
 
   /**
    * \brief An RTO event happened

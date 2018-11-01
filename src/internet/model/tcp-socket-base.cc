@@ -1636,8 +1636,17 @@ TcpSocketBase::DupAck ()
       // (1) If DupAcks >= DupThresh, go to step (4).
       if ((m_dupAckCount == m_retxThresh) && (m_highRxAckMark >= m_recover))
         {
-          EnterRecovery ();
-          NS_ASSERT (m_tcb->m_congState == TcpSocketState::CA_RECOVERY);
+                     //If TcpTahoe is used as Congestion Control Algorithm and  "m_retxThresh" number of DupAck occour it enter into CA_OPEN state
+          if(m_congestionControl->GetName()=="TcpTahoe")
+          {
+                EnterOpenState();
+
+          }
+          else            
+          {    
+                EnterRecovery ();
+                NS_ASSERT (m_tcb->m_congState == TcpSocketState::CA_RECOVERY);
+          }
         }
       // (2) If DupAcks < DupThresh but IsLost (HighACK + 1) returns true
       // (indicating at least three segments have arrived above the current
@@ -1645,8 +1654,17 @@ TcpSocketBase::DupAck ()
       // go to step (4).
       else if (m_txBuffer->IsLost (m_highRxAckMark + m_tcb->m_segmentSize))
         {
-          EnterRecovery ();
-          NS_ASSERT (m_tcb->m_congState == TcpSocketState::CA_RECOVERY);
+          //If TcpTahoe is used as Congestion Control Algorithm and  "m_retxThresh" number of DupAck occour it enter into CA_OPEN state
+          if(m_congestionControl->GetName()=="TcpTahoe")
+          {
+                EnterOpenState();
+
+          }
+          else
+          {
+                EnterRecovery ();
+                NS_ASSERT (m_tcb->m_congState == TcpSocketState::CA_RECOVERY);
+          }
         }
       else
         {
@@ -1666,6 +1684,20 @@ TcpSocketBase::DupAck ()
             }
         }
     }
+}
+
+void TcpSocketBase::EnterOpenState()
+{
+ m_dupAckCount = 0;
+ uint32_t inFlightBeforeRto = BytesInFlight ();
+ m_tcb->m_ssThresh = m_congestionControl->GetSsThresh (m_tcb, inFlightBeforeRto);
+ m_tcb->m_cWnd = m_tcb->m_segmentSize;
+ m_tcb->m_cWndInfl = m_tcb->m_cWnd;
+
+ m_congestionControl->CongestionStateSet (m_tcb, TcpSocketState::CA_OPEN);
+ m_tcb->m_congState = TcpSocketState::CA_OPEN;
+ SendPendingData (m_connected);
+
 }
 
 /* Process the newly received ACK */
@@ -4254,3 +4286,4 @@ RttHistory::RttHistory (const RttHistory& h)
 }
 
 } // namespace ns3
+
