@@ -22,7 +22,7 @@
 #include "tcp-tahoe.h"
 #include "tcp-socket-base.h"
 #include "ns3/log.h"
-        
+
 namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("TcpTahoe");
@@ -60,7 +60,6 @@ TcpTahoe::GetName () const
 {
   return "TcpTahoe";
 }
-
 
 
 Ptr<TcpCongestionOps>

@@ -50,14 +50,11 @@ public:
 
   std::string GetName () const;
 
-
-
-
   virtual Ptr<TcpCongestionOps> Fork ();
 
 
 };
 
-} 
+}
 
-#endif 
+#endif /* TCPTAHOE_H */

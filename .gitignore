@@ -35,5 +35,7 @@ TAGS
 
 build-dir/
 build/
+scratch/
+.hg/
 /.cproject
 /.project
