@@ -1683,9 +1683,9 @@ TcpSocketBase::DupAck ()
         }
     }
 }
-/*It resets the Cwnd to 1 segment size, changes the ssThresh to half of the inflight data and the state to CA_OPEN */
+/*It resets the Cwnd to 1 segment size, changes the ssThresh to half of the inflight data and the state to CA_LOSS */
 void TcpSocketBase::EnterOpenState ()
-{
+{  
   m_dupAckCount = 0;
   uint32_t inFlightBeforeRto = BytesInFlight ();
   m_tcb->m_ssThresh = m_congestionControl->GetSsThresh (m_tcb, inFlightBeforeRto);
@@ -1695,7 +1695,6 @@ void TcpSocketBase::EnterOpenState ()
   m_congestionControl->CongestionStateSet (m_tcb, TcpSocketState::CA_LOSS);
   m_tcb->m_congState = TcpSocketState::CA_LOSS;
   SendPendingData (m_connected);
-
 }
 
 /* Process the newly received ACK */
