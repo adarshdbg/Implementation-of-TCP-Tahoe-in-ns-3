@@ -367,6 +367,18 @@ Here follows a list of supported TCP congestion control algorithms. For an
 academic peer-reviewed paper on these congestion control algorithms, see
 http://dl.acm.org/citation.cfm?id=2756518 .
 
+Tahoe
+^^^^^
+Tahoe follows the same congestion window increment strategies as Reno algorithm, 
+namely: slow start and congestion avoidance. Tahoe differs from the Reno in 
+only one aspect, the way it responds to a threshold number of duplicate ACKs.
+
+  If three duplicate ACKs are received(i.e. four ACKs acknowledging the same
+  packet), just like in case of a RTO, Tahoe performs a fast retransmit, sets 
+  the slow start threshold to half of the current congestion window, then 
+  reduces the congestion window to 1 MSS, and resets to slow start state. 
+  Behavior of both Reno and Tahoe is identical in other scenarios.
+  
 New Reno
 ^^^^^^^^
 New Reno algorithm introduces partial ACKs inside the well-established Reno
